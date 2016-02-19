@@ -1,0 +1,138 @@
+drop database parking_place_manage_system;
+create database parking_place_manage_system;
+use parking_place_manage_system;
+
+CREATE TABLE common_user (
+  user_name varchar(100) NOT NULL DEFAULT '',
+  password varchar(32) DEFAULT NULL,
+  PRIMARY KEY (user_name)
+);
+
+INSERT INTO common_user VALUES ('root','0ba7bc92fcd57e337ebb9e74308c811f');
+
+CREATE TABLE manage_user (
+  user_name varchar(100) NOT NULL DEFAULT '',
+  password varchar(32) DEFAULT NULL,
+  PRIMARY KEY (user_name)
+);
+
+INSERT INTO manage_user VALUES ('admin','e10adc3949ba59abbe56e057f20f883e');
+
+CREATE TABLE session (
+  user_name varchar(100) NOT NULL DEFAULT '',
+  session varchar(100) DEFAULT NULL,
+  PRIMARY KEY (user_name)
+);
+
+CREATE TABLE left_parking_place (
+  left_number int(11) DEFAULT NULL,
+  sum_number int(11) DEFAULT NULL,
+  in_number int(11) DEFAULT NULL
+);
+
+INSERT INTO left_parking_place VALUES (10,10,0);
+
+create table card_combo (
+  combo_ID varchar(10),
+  combo_name varchar(100),
+  free_hour int(11),
+  combo_money int(11),
+  money_per_hour float,
+  PRIMARY KEY (combo_ID)
+);
+
+INSERT INTO card_combo VALUES 
+('CC1','优惠套餐1',60,400,10),
+('CC2','优惠套餐2',80,700,12),
+('CC3','优惠套餐3',100,1000,13);
+
+CREATE TABLE parking_position (
+  parking_position_ID varchar(35) NOT NULL DEFAULT '',
+  parking_quality varchar(20) DEFAULT NULL,
+  is_belong varchar(20) DEFAULT NULL,
+  parking_describe varchar(1000) DEFAULT NULL,
+  PRIMARY KEY (parking_position_ID)
+);
+
+INSERT INTO parking_position VALUES 
+('K001','temporary','false','位于A区与B区之间'),
+('K002','temporary','false','位于A区与B区之间'),
+('K003','temporary','false','位于A区与B区之间'),
+('K004','temporary','false','位于A区与B区之间'),
+('K005','temporary','false','位于A区与B区之间'),
+('K006','temporary','false','位于A区与B区之间'),
+('K007','temporary','false','位于A区与B区之间'),
+('K008','temporary','false','位于A区与B区之间'),
+('K009','temporary','false','位于A区与B区之间'),
+('K010','temporary','false','位于A区与B区之间'),
+('K011','fixed','false','位于C区与D区之间'),
+('K012','fixed','false','位于C区与D区之间'),
+('K013','fixed','false','位于C区与D区之间'),
+('K014','fixed','false','位于C区与D区之间'),
+('K015','fixed','false','位于C区与D区之间'),
+('K016','fixed','false','位于C区与D区之间'),
+('K017','fixed','false','位于C区与D区之间'),
+('K018','fixed','false','位于C区与D区之间'),
+('K019','fixed','false','位于C区与D区之间');
+
+CREATE TABLE fixed_card (
+	card_num varchar(35) NOT NULL DEFAULT '',
+	parking_position_ID varchar(35) DEFAULT NULL,
+	card_money float DEFAULT NULL,
+	left_hour int(11) DEFAULT NULL,
+	combo_ID varchar(10) DEFAULT NULL,
+	uncalculate int(11) DEFAULT NULL,
+	PRIMARY KEY (card_num),
+	FOREIGN KEY (combo_ID) REFERENCES card_combo (combo_ID),
+	FOREIGN KEY (parking_position_ID) REFERENCES parking_position (parking_position_ID)
+);
+
+CREATE TABLE temporary_card (
+	card_num varchar(35) NOT NULL DEFAULT '',
+	parking_position_ID varchar(35) DEFAULT NULL,
+	PRIMARY KEY (card_num),
+	FOREIGN KEY (parking_position_ID) REFERENCES parking_position (parking_position_ID)
+);
+
+INSERT INTO temporary_card VALUES 
+('P002','K002'),('P003','K003'),
+('P004','K004'),('P005','K005'),
+('P006','K006'),('P007','K007'),
+('P008','K008'),('P009','K009'),('P010','K010');
+
+CREATE TABLE card_record (
+	card_num varchar(35) DEFAULT NULL,
+	car_num varchar(100) DEFAULT NULL,
+	arrive_time varchar(25) DEFAULT NULL,
+	leave_time varchar(25) DEFAULT NULL,
+	using_time varchar(25) DEFAULT NULL,
+	get_money float DEFAULT NULL
+);
+
+CREATE TABLE temporary_money (
+  start_time varchar(10) DEFAULT NULL,
+  end_time varchar(10) DEFAULT NULL,
+  price float DEFAULT NULL
+);
+
+INSERT INTO temporary_money VALUES 
+('00:00:00','08:00:00',1),
+('08:00:00','12:00:00',5),
+('12:00:00','18:00:00',10),
+('18:00:00','00:00:00',4);
+
+CREATE TABLE user (
+	user_name varchar(100) NOT NULL DEFAULT '',
+	password varchar(32) DEFAULT NULL,
+	card_num varchar(35) DEFAULT NULL,
+	sex varchar(10) DEFAULT NULL,
+	phone_num varchar(11) DEFAULT NULL,
+	PRIMARY KEY (user_name),
+	FOREIGN KEY (card_num) REFERENCES fixed_card (card_num)
+);
+
+CREATE TABLE next_month (
+  next_month_1st varchar(35) DEFAULT NULL
+);
+
+INSERT INTO next_month VALUES ('2015-07-01');
